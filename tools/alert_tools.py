@@ -9,7 +9,7 @@ import logging
 from dataclasses import asdict
 
 from agents import RunContextWrapper, function_tool
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import ScenarioData
+from sentinelmesh_ai.simulators.scenario_engine import ScenarioData
 
 logger = logging.getLogger(__name__)
 

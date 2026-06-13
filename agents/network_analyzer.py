@@ -5,7 +5,7 @@ port scanning, and malware network indicators.
 """
 
 from agents import Agent, ModelSettings
-from cybersecurity_threat_detection_agent.tools.network_tools import (
+from sentinelmesh_ai.tools.network_tools import (
     detect_c2_patterns,
     query_api_access_logs,
     query_network_logs,

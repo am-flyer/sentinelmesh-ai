@@ -6,10 +6,10 @@ threat category and severity, and hands off to the appropriate analysis agent.
 """
 
 from agents import Agent, ModelSettings
-from cybersecurity_threat_detection_agent.guardrails.input_validation import (
+from sentinelmesh_ai.guardrails.input_validation import (
     security_input_guardrail,
 )
-from cybersecurity_threat_detection_agent.tools.alert_tools import (
+from sentinelmesh_ai.tools.alert_tools import (
     fetch_security_alerts,
     get_asset_inventory,
 )

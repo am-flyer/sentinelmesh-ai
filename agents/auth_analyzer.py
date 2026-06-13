@@ -5,7 +5,7 @@ credential stuffing, and privilege escalation by analyzing auth logs.
 """
 
 from agents import Agent, ModelSettings
-from cybersecurity_threat_detection_agent.tools.auth_tools import (
+from sentinelmesh_ai.tools.auth_tools import (
     check_privilege_changes,
     detect_anomalous_logins,
     query_auth_logs,

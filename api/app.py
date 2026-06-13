@@ -4,7 +4,7 @@ Serves the multi-agent threat pipeline with CORS and SSE streaming
 for real-time phase and tool activity.
 
 Usage:
-    PYTHONPATH=projects uv run uvicorn cybersecurity_threat_detection_agent.api.app:app --reload --port 8005
+    PYTHONPATH=projects uv run uvicorn sentinelmesh_ai.api.app:app --reload --port 8005
 """
 
 import logging
@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from cybersecurity_threat_detection_agent.api.routers.threat import router as threat_router
+from sentinelmesh_ai.api.routers.threat import router as threat_router
 
 logging.basicConfig(
     level=logging.INFO,

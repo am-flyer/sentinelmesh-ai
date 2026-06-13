@@ -5,7 +5,7 @@ to enrich analysis findings and compute a final threat score.
 """
 
 from agents import Agent, ModelSettings
-from cybersecurity_threat_detection_agent.tools.threat_intel_tools import (
+from sentinelmesh_ai.tools.threat_intel_tools import (
     get_threat_reputation,
     lookup_ioc,
     map_mitre_attack,

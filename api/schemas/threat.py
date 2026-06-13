@@ -8,7 +8,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import ScenarioType
+from sentinelmesh_ai.simulators.scenario_engine import ScenarioType
 
 RunStatus = Literal["pending", "running", "completed", "failed"]
 

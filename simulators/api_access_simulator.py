@@ -7,7 +7,7 @@ excessive API calls, unauthorized endpoint access, and API key abuse.
 import random
 from datetime import datetime, timedelta
 
-from cybersecurity_threat_detection_agent.models.analysis import APIAccessEntry
+from sentinelmesh_ai.models.analysis import APIAccessEntry
 
 # Normal API endpoints
 NORMAL_ENDPOINTS = [

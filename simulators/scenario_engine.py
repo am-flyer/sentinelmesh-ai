@@ -10,43 +10,43 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Literal
 
-from cybersecurity_threat_detection_agent.models.analysis import (
+from sentinelmesh_ai.models.analysis import (
     APIAccessEntry,
     AuthLogEntry,
     CloudAuditEntry,
     EndpointEvent,
     NetworkLogEntry,
 )
-from cybersecurity_threat_detection_agent.models.events import AssetInfo, SecurityAlert
-from cybersecurity_threat_detection_agent.simulators.api_access_simulator import (
+from sentinelmesh_ai.models.events import AssetInfo, SecurityAlert
+from sentinelmesh_ai.simulators.api_access_simulator import (
     generate_api_key_compromise_api_logs,
     generate_brute_force_api_logs,
     generate_cloud_misconfig_api_logs,
     generate_insider_threat_api_logs,
     generate_malware_api_logs,
 )
-from cybersecurity_threat_detection_agent.simulators.auth_log_simulator import (
+from sentinelmesh_ai.simulators.auth_log_simulator import (
     generate_api_key_compromise_auth_logs,
     generate_brute_force_auth_logs,
     generate_cloud_misconfig_auth_logs,
     generate_insider_threat_auth_logs,
     generate_malware_auth_logs,
 )
-from cybersecurity_threat_detection_agent.simulators.cloud_audit_simulator import (
+from sentinelmesh_ai.simulators.cloud_audit_simulator import (
     generate_api_key_compromise_cloud_audit,
     generate_brute_force_cloud_audit,
     generate_cloud_misconfig_cloud_audit,
     generate_insider_threat_cloud_audit,
     generate_malware_cloud_audit,
 )
-from cybersecurity_threat_detection_agent.simulators.endpoint_simulator import (
+from sentinelmesh_ai.simulators.endpoint_simulator import (
     generate_api_key_compromise_endpoint_events,
     generate_brute_force_endpoint_events,
     generate_cloud_misconfig_endpoint_events,
     generate_insider_threat_endpoint_events,
     generate_malware_endpoint_events,
 )
-from cybersecurity_threat_detection_agent.simulators.network_log_simulator import (
+from sentinelmesh_ai.simulators.network_log_simulator import (
     generate_api_key_compromise_network_logs,
     generate_brute_force_network_logs,
     generate_cloud_misconfig_network_logs,

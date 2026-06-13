@@ -16,9 +16,10 @@ An autonomous SOC (Security Operations Center) analyst built with the OpenAI Age
 
 ```bash
 # Clone the repository (if not already done)
-cd outskill-ai-lab
+cd sentinelmesh-ai
 
 # Install dependencies
+pip install uv
 uv sync
 ```
 
@@ -36,12 +37,12 @@ OPENROUTER_MODEL=openai/gpt-5-mini
 
 ```bash
 # Interactive mode (select a scenario)
-PYTHONPATH=projects uv run python -m cybersecurity_threat_detection_agent.main
+PYTHONPATH=projects uv run python -m sentinelmesh_ai.main
 
 # Programmatic mode (specific scenario)
 PYTHONPATH=projects uv run python -c "
 import asyncio
-from cybersecurity_threat_detection_agent.main import run_threat_detection
+from sentinelmesh_ai.main import run_threat_detection
 
 async def main():
     report = await run_threat_detection('brute_force_attack')
@@ -81,7 +82,7 @@ asyncio.run(main())
 ## Project Structure
 
 ```
-projects/cybersecurity_threat_detection_agent/
+projects/sentinelmesh_ai/
 ├── main.py                          # Entry point, OpenRouter config, pipeline orchestration
 ├── utils/
 │   └── config.py                    # Environment variable loader
@@ -123,7 +124,7 @@ projects/cybersecurity_threat_detection_agent/
 
 ```python
 import asyncio
-from cybersecurity_threat_detection_agent.main import run_threat_detection
+from sentinelmesh_ai.main import run_threat_detection
 
 report = asyncio.run(run_threat_detection("malware_lateral_movement"))
 print(report)
@@ -140,7 +141,7 @@ OPENROUTER_MODEL=anthropic/claude-sonnet-4
 ### Test Simulators Standalone
 
 ```python
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import generate_scenario
+from sentinelmesh_ai.simulators.scenario_engine import generate_scenario
 
 data = generate_scenario("insider_threat")
 print(f"Auth logs: {len(data.auth_logs)}")

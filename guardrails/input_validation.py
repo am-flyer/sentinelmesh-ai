@@ -7,7 +7,7 @@ before the agent pipeline processes it.
 import logging
 
 from agents import Agent, GuardrailFunctionOutput, InputGuardrail, RunContextWrapper
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import ScenarioData
+from sentinelmesh_ai.simulators.scenario_engine import ScenarioData
 
 logger = logging.getLogger(__name__)
 

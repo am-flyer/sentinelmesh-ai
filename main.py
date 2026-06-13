@@ -6,8 +6,16 @@ threat scenarios and runs them through specialized agents for alert intake,
 auth analysis, network analysis, threat intelligence, containment, and reporting.
 
 Usage:
-    uv run python -m cybersecurity_threat_detection_agent.main
+    uv run python -m sentinelmesh_ai.main
 """
+
+import os
+import sys
+
+# Remove root_dir from sys.path to prevent local 'agents' folder from shadowing the third-party 'agents' package
+root_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path = [p for p in sys.path if os.path.abspath(p) != root_dir]
+sys.path = [p for p in sys.path if p not in ("", ".")]
 
 import asyncio
 import logging
@@ -21,30 +29,30 @@ from agents import (
     Runner,
     set_tracing_disabled,
 )
-from cybersecurity_threat_detection_agent.agents.alert_intake import (
+from sentinelmesh_ai.agents.alert_intake import (
     create_alert_intake_agent,
 )
-from cybersecurity_threat_detection_agent.agents.auth_analyzer import (
+from sentinelmesh_ai.agents.auth_analyzer import (
     create_auth_analyzer_agent,
 )
-from cybersecurity_threat_detection_agent.agents.containment import (
+from sentinelmesh_ai.agents.containment import (
     create_containment_agent,
 )
-from cybersecurity_threat_detection_agent.agents.network_analyzer import (
+from sentinelmesh_ai.agents.network_analyzer import (
     create_network_analyzer_agent,
 )
-from cybersecurity_threat_detection_agent.agents.soc_reporter import (
+from sentinelmesh_ai.agents.soc_reporter import (
     create_soc_reporter_agent,
 )
-from cybersecurity_threat_detection_agent.agents.threat_intel import (
+from sentinelmesh_ai.agents.threat_intel import (
     create_threat_intel_agent,
 )
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import (
+from sentinelmesh_ai.simulators.scenario_engine import (
     ScenarioType,
     generate_scenario,
     list_scenarios,
 )
-from cybersecurity_threat_detection_agent.utils.config import load_config
+from sentinelmesh_ai.utils.config import load_config
 
 logging.basicConfig(
     level=logging.INFO,

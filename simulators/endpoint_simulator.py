@@ -7,7 +7,7 @@ suspicious process trees, malware indicators, and lateral movement.
 import random
 from datetime import datetime, timedelta
 
-from cybersecurity_threat_detection_agent.models.analysis import EndpointEvent
+from sentinelmesh_ai.models.analysis import EndpointEvent
 
 # Normal process names and their typical parents
 NORMAL_PROCESSES = [

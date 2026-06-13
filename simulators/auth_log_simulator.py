@@ -7,7 +7,7 @@ impossible travel, credential stuffing, and privilege escalation.
 import random
 from datetime import datetime, timedelta
 
-from cybersecurity_threat_detection_agent.models.analysis import AuthLogEntry
+from sentinelmesh_ai.models.analysis import AuthLogEntry
 
 # Known legitimate users and their typical locations
 LEGITIMATE_USERS = {

@@ -19,8 +19,8 @@ from dataclasses import dataclass, field
 
 from agents import AgentHooks
 
-from cybersecurity_threat_detection_agent.api.schemas.threat import PhaseType, RunStatus
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import ScenarioType
+from sentinelmesh_ai.api.schemas.threat import PhaseType, RunStatus
+from sentinelmesh_ai.simulators.scenario_engine import ScenarioType
 
 logger = logging.getLogger(__name__)
 

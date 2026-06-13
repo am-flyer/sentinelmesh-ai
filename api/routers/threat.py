@@ -11,21 +11,21 @@ from agents import RunConfig, Runner
 from fastapi import APIRouter, HTTPException
 from sse_starlette.sse import EventSourceResponse
 
-from cybersecurity_threat_detection_agent.api.schemas.threat import (
+from sentinelmesh_ai.api.schemas.threat import (
     ScenarioInfo,
     ThreatRequest,
     ThreatResultResponse,
     ThreatRunResponse,
 )
-from cybersecurity_threat_detection_agent.api.streaming import (
+from sentinelmesh_ai.api.streaming import (
     StreamingThreatHooks,
     _sse_line,
     create_run,
     event_generator,
     get_run,
 )
-from cybersecurity_threat_detection_agent.main import build_agent_pipeline, create_openrouter_model
-from cybersecurity_threat_detection_agent.simulators.scenario_engine import (
+from sentinelmesh_ai.main import build_agent_pipeline, create_openrouter_model
+from sentinelmesh_ai.simulators.scenario_engine import (
     ScenarioData,
     generate_scenario,
     list_scenarios as list_engine_scenarios,
