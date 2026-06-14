@@ -4,8 +4,6 @@ Cybersecurity multi-agent analyzer built with LangGraph, HuggingFace embeddings,
 
 # Working Prototype for Demo
 
-# Working Prototype for Demo
-
 ### 🚀 Live Demo
 You can access the live web application here:
 👉 [Launch Working Prototype](https://f497a385101483016c.gradio.live)
