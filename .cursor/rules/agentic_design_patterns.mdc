@@ -1,0 +1,11 @@
+---
+description: Agentic design patterns for SentinelMesh AI
+globs:
+  - "projects/sentinelmesh_ai/**/*.py"
+---
+
+# Agentic Design Patterns
+
+- Keep pipeline orchestration in `projects/sentinelmesh_ai/main.py`.
+- Keep UI adapters under `projects/sentinelmesh_ai/api/`.
+- Keep generated artifacts under `projects/sentinelmesh_ai/outputs/`.
