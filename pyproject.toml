@@ -1,0 +1,36 @@
+[project]
+name = "sentinelmesh-ai"
+version = "0.1.0"
+description = "Cybersecurity multi-agent analysis system with LangGraph, ChromaDB, and Gradio."
+requires-python = ">=3.10"
+dependencies = [
+  "langgraph>=0.2.0",
+  "langchain>=0.3.0",
+  "langchain-community>=0.3.0",
+  "langchain-openai>=0.2.0",
+  "openai>=1.40.0",
+  "sentence-transformers>=3.0.0",
+  "huggingface-hub>=0.24.0",
+  "torch>=2.0.0",
+  "chromadb>=0.5.0",
+  "llama-index>=0.11.0",
+  "llama-index-core>=0.11.0",
+  "llama-index-vector-stores-chroma>=0.2.0",
+  "llama-index-embeddings-huggingface>=0.3.0",
+  "gradio>=4.0.0",
+  "langsmith>=0.1.0",
+  "matplotlib>=3.7.0",
+  "grandalf>=0.8",
+  "python-dotenv>=1.0.0",
+  "rich>=13.0.0",
+]
+
+[project.scripts]
+sentinelmesh = "main:cli"
+
+[tool.setuptools]
+py-modules = ["main"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agents*", "api*", "guardrails*", "models*", "simulators*", "tools*", "utils*"]

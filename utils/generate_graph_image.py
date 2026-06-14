@@ -1,10 +1,24 @@
 """Generate a visual image of the LangGraph pipeline."""
-from cybersecurityAgents import (
-    build_llm,
-    build_embeddings,
-    build_cybersec_graph,
-    VectorKnowledgeBase,
-)
+from pathlib import Path
+import sys
+
+OUTPUT_PATH = Path(__file__).resolve().parents[1] / "assets" / "langgraph_pipeline.png"
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from main import (
+        build_llm,
+        build_embeddings,
+        build_cybersec_graph,
+        VectorKnowledgeBase,
+    )
+else:
+    from ..main import (
+        build_llm,
+        build_embeddings,
+        build_cybersec_graph,
+        VectorKnowledgeBase,
+    )
 
 print("Initializing pipeline to generate graph image...")
 llm = build_llm()
@@ -15,9 +29,9 @@ app = build_cybersec_graph(llm, kb)
 # Method 1: LangGraph built-in (requires pygraphviz or grandalf)
 try:
     png_data = app.get_graph().draw_png()
-    with open("langgraph_pipeline.png", "wb") as f:
+    with open(OUTPUT_PATH, "wb") as f:
         f.write(png_data)
-    print("✅ Graph saved as langgraph_pipeline.png (using LangGraph draw_png)")
+    print(f"Graph saved as {OUTPUT_PATH} (using LangGraph draw_png)")
 except Exception as e:
     print(f"draw_png not available ({e}), falling back to matplotlib...")
 
@@ -127,5 +141,5 @@ except Exception as e:
                 arrowprops=dict(arrowstyle="->", color="black", lw=1.5))
 
     plt.tight_layout()
-    plt.savefig("langgraph_pipeline.png", dpi=150, bbox_inches="tight")
-    print("✅ Graph saved as langgraph_pipeline.png (using matplotlib)")
+    plt.savefig(OUTPUT_PATH, dpi=150, bbox_inches="tight")
+    print(f"Graph saved as {OUTPUT_PATH} (using matplotlib)")

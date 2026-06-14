@@ -13,7 +13,7 @@
 | LlamaIndex | RAG framework | Document indexing, retrieval, query engine |
 | ChromaDB | Vector database | Persistent local vector store with cosine similarity |
 | Gradio | Web UI | Interactive browser-based interface |
-| python-dotenv | Config management | Secure API key loading from cs.env |
+| python-dotenv | Config management | Secure API key loading from .env |
 
 ## Architecture Skills
 
@@ -43,7 +43,7 @@
 
 | Feature | Implementation |
 |---|---|
-| Authentication | Login gate with credentials from cs.env |
+| Authentication | Login gate with credentials from .env |
 | Rate limiting | 30s cooldown between analysis requests |
 | Input validation | Max 10,000 character limit on input |
 | Network security | Localhost-only binding, share=False |
@@ -56,11 +56,11 @@
 
 ## Key Design Decisions
 
-1. **cs.env for secrets** — API keys stored externally, loaded via python-dotenv
+1. **.env for secrets** — API keys stored externally, loaded via python-dotenv
 2. **Vector store persistence check** — `check_vector_store_exists()` runs before heavy initialization; skips re-indexing if ChromaDB already has data
 3. **Gradio status panel** — Real-time green checkboxes show initialization state to the user
 4. **Singleton pattern** — LLM, embeddings, KB, and graph initialized once per session, not per request
 5. **Hybrid Tool architecture** — Pipeline uses deterministic node flow, but agents internally call `@tool` utilities (query_knowledge_base, lookup_cve, check_compliance_control) for enrichment
 6. **Ollama local LLM** — Uses OpenAI-compatible endpoint at localhost:11434/v1 with gpt-oss:120b-cloud
 7. **Iterative Code Fixer** — Conditional edge loops up to 3x until code is fully fixed
-8. **LangSmith tracing** — Auto-enabled when LANGSMITH_TRACING=true in cs.env; traces all LLM calls, @tool invocations, and node transitions to LangSmith dashboard
+8. **LangSmith tracing** — Auto-enabled when LANGSMITH_TRACING=true in .env; traces all LLM calls, @tool invocations, and node transitions to LangSmith dashboard

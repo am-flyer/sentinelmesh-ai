@@ -2,11 +2,11 @@
 
 ## Overview
 
-This document analyzes the **Gradio** web UI integration for `cybersecurityAgents.py`, providing users with an interactive visual interface to run security analyses and view agent results.
+This document analyzes the **Gradio** web UI integration for `main.py`, providing users with an interactive visual interface to run security analyses and view agent results.
 
 ---
 
-## Current Entry Points (from `cybersecurityAgents.py`)
+## Current Entry Points (from `main.py`)
 
 | Entry Point | Description |
 |---|---|
@@ -42,7 +42,7 @@ def check_vector_store_exists() -> bool:
 ```
 
 **Behavior:**
-- If `./chroma_cybersec_db/` exists and has vectors → loads existing index (no re-indexing)
+- If `data/chroma_cybersec_db/` exists and has vectors → loads existing index (no re-indexing)
 - If not → indexes the `CYBERSEC_KNOWLEDGE_BASE` documents into ChromaDB (first run only)
 - `VectorKnowledgeBase.loaded_existing` flag tracks which path was taken
 
@@ -86,7 +86,7 @@ The right panel shows green ✅ checkboxes after initialization:
 
 ```
 ┌──────────────┐       ┌───────────────────────┐       ┌──────────────────┐
-│  Gradio UI   │──────▶│  cybersecurityAgents   │──────▶│  LangGraph       │
+│  Gradio UI   │──────▶│  main   │──────▶│  LangGraph       │
 │  (Browser)   │◀──────│  (pipeline singleton)  │◀──────│  Pipeline        │
 └──────────────┘       └───────────────────────┘       └──────────────────┘
                                      │
@@ -150,7 +150,7 @@ def get_pipeline():
     return _graph
 ```
 
-### cs.env for Credentials
+### .env for Credentials
 
 ```
 OPENROUTER_API_KEY=<your_key_here>
@@ -166,7 +166,7 @@ Loaded via `python-dotenv` at module import time — no hardcoded keys in source
 
 ### LangSmith Observability
 
-When `LANGSMITH_TRACING=true` is set in cs.env, the system auto-traces:
+When `LANGSMITH_TRACING=true` is set in .env, the system auto-traces:
 
 | What | Visibility |
 |------|------------|
@@ -181,7 +181,7 @@ To disable: set `LANGSMITH_TRACING=false` — no code changes needed.
 
 | Layer | Implementation |
 |-------|---------------|
-| Authentication | `demo.launch(auth=authenticate)` — credentials from cs.env |
+| Authentication | `demo.launch(auth=authenticate)` — credentials from .env |
 | Rate Limiting | 30s cooldown between requests per session |
 | Input Validation | Max 10,000 chars — rejects oversized prompts |
 | Network Binding | `server_name="127.0.0.1"` — localhost only |
@@ -218,10 +218,10 @@ gradio>=4.0.0
 
 | Aspect | Approach |
 |---|---|
-| Wrapper | Gradio Blocks wrapping singleton pipeline from `cybersecurityAgents.py` |
+| Wrapper | Gradio Blocks wrapping singleton pipeline from `main.py` |
 | Layout | Tabbed output + status sidebar with green ✅ checkboxes |
 | Persistence | `check_vector_store_exists()` before init; skip re-indexing if data exists |
-| Secrets | API keys in `cs.env`, loaded via python-dotenv |
+| Secrets | API keys in `.env`, loaded via python-dotenv |
 | Status | Real-time ✅/⬜ indicators for LLM, Embeddings, Vector Store, Graph |
 | Performance | Singleton initialization, fast subsequent requests |
-| Deployment | `python cybersecurityGradio.py` → launches local browser UI |
+| Deployment | `python api/gradio_app.py` → launches local browser UI |

@@ -1,22 +1,41 @@
+import sys
+from pathlib import Path
+
 import gradio as gr
-from cybersecurityAgents import (
-    run_analysis,
-    EXAMPLE_INPUTS,
-    build_llm,
-    build_embeddings,
-    build_cybersec_graph,
-    VectorKnowledgeBase,
-    CyberAgentState,
-    Config,
-    check_vector_store_exists,
-)
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from main import (
+        run_analysis,
+        EXAMPLE_INPUTS,
+        build_llm,
+        build_embeddings,
+        build_cybersec_graph,
+        VectorKnowledgeBase,
+        CyberAgentState,
+        Config,
+        check_vector_store_exists,
+    )
+else:
+    from ..main import (
+        run_analysis,
+        EXAMPLE_INPUTS,
+        build_llm,
+        build_embeddings,
+        build_cybersec_graph,
+        VectorKnowledgeBase,
+        CyberAgentState,
+        Config,
+        check_vector_store_exists,
+    )
+
 from datetime import datetime
 import json
 import time
 import os
 from dotenv import load_dotenv
 
-load_dotenv("cs.env")
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 # ── Security Configuration ─────────────────────────────────────────────
 GRADIO_USER = os.getenv("GRADIO_USER", "admin")
@@ -168,7 +187,7 @@ SCENARIO_DESCRIPTIONS = {
 
 
 def authenticate(username, password):
-    """Validate login credentials against cs.env values."""
+    """Validate login credentials against .env values."""
     return username == GRADIO_USER and password == GRADIO_PASSWORD
 
 

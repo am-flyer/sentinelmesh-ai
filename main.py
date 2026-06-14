@@ -11,10 +11,11 @@ import json
 import time
 import hashlib
 from datetime import datetime
+from pathlib import Path
 from typing import TypedDict, Annotated, List, Optional, Any
 from dotenv import load_dotenv
 
-load_dotenv("cs.env")
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 # ── LangSmith Tracing (auto-enabled if env vars are set) ─────────────
 if os.getenv("LANGSMITH_TRACING", "false").lower() == "true":
@@ -71,7 +72,8 @@ class Config:
     # EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
 
     # ── ChromaDB (persistent local vector store) ────────────────────────
-    CHROMA_PERSIST_DIR: str = "./chroma_cybersec_db"
+    PROJECT_DIR: Path = Path(__file__).resolve().parent
+    CHROMA_PERSIST_DIR: str = str(PROJECT_DIR / "data" / "chroma_cybersec_db")
     CHROMA_COLLECTION: str = "cybersecurity_knowledge"
 
     # ── RAG settings ────────────────────────────────────────────────────
@@ -879,6 +881,9 @@ def node_synthesize_report(state: CyberAgentState) -> CyberAgentState:
     ir = state.get("incident_plan") or {}
     pc = state.get("policy_gaps") or {}
 
+    code_fix_metric = "Skipped" if cf.get("skipped") else "Iter {}/3".format(cf.get("iteration", 0))
+    code_fix_detail = "—" if cf.get("skipped") else ("✅ Fixed" if cf.get("is_fully_fixed") else "❌ Remaining issues")
+
     lines = [
         f"📋 **Analysis Report** | Generated: `{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}` | Input: `{state.get('input_type', 'unknown').upper()}`",
         "",
@@ -891,7 +896,7 @@ def node_synthesize_report(state: CyberAgentState) -> CyberAgentState:
         f"| 📡 Log Monitor | Severity: **{lf.get('severity','N/A')}** | {len(lf.get('findings',[]))} findings |",
         f"| 🕵️ Threat Intel | Exposure: **{ti.get('exposure_level','N/A')}** | {len(ti.get('cves',[]))} CVEs, {len(ti.get('mitre_ttps',[]))} TTPs |",
         f"| 🔍 Vuln Scanner | Risk: **{vs.get('risk_score','N/A')}/100** | {vs.get('total_findings',0)} findings |",
-        f"| 🔧 Code Fixer | {'Skipped' if cf.get('skipped') else f'Iter {cf.get("iteration",0)}/3'} | {'—' if cf.get('skipped') else ('✅ Fixed' if cf.get('is_fully_fixed') else '❌ Remaining issues')} |",
+        f"| 🔧 Code Fixer | {code_fix_metric} | {code_fix_detail} |",
         f"| 🚨 Incident Response | Priority: **{ir.get('priority','N/A')}** | {ir.get('incident_classification','N/A')} |",
         f"| 📋 Policy Checker | Score: **{pc.get('overall_score','N/A')}/100** | {len(pc.get('gaps',[]))} gaps |",
     ]
@@ -1098,13 +1103,15 @@ def run_analysis(user_input: str, save_report: bool = True) -> dict:
     # Save report
     if save_report and final_state.get("final_report"):
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        fname = f"cybersec_report_{ts}.txt"        
+        output_dir = Config.PROJECT_DIR / "outputs"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        fname = output_dir / f"cybersec_report_{ts}.txt"        
         with open(fname, "w", encoding="utf-8") as f:
             f.write(final_state["final_report"])
         print(f"💾 Report saved: {fname}")
 
         # Also save JSON results
-        json_fname = f"cybersec_results_{ts}.json"
+        json_fname = output_dir / f"cybersec_results_{ts}.json"
         json_data = {k: v for k, v in final_state.items() if k != "final_report"}        
         with open(json_fname, "w", encoding="utf-8") as f:
             json.dump(json_data, f, indent=2, default=str)
@@ -1201,7 +1208,7 @@ Company Security Policy Review:
 }
 
 
-if __name__ == "__main__":
+def cli():
     import sys
 
     # Force UTF-8 encoding for stdout to prevent UnicodeEncodeError on Windows terminals
@@ -1216,3 +1223,7 @@ if __name__ == "__main__":
     print(f"Input preview: {user_input.strip()[:120]}...")
 
     results = run_analysis(user_input, save_report=True)
+
+
+if __name__ == "__main__":
+    cli()
