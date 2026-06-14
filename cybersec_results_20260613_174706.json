@@ -1,0 +1,37 @@
+{
+  "raw_input": "\nNov 12 03:14:22 web01 sshd[12345]: Failed password for root from 192.168.1.105 port 54321 ssh2\nNov 12 03:14:23 web01 sshd[12346]: Failed password for root from 192.168.1.105 port 54322 ssh2\nNov 12 03:14:24 web01 sshd[12347]: Failed password for admin from 192.168.1.105 port 54323 ssh2\nNov 12 03:14:25 web01 sshd[12348]: Failed password for ubuntu from 192.168.1.105 port 54324 ssh2\nNov 12 03:14:30 web01 sshd[12350]: Failed password for root from 185.220.101.45 port 12345 ssh2\nNov 12 03:14:50 web01 sshd[12360]: Accepted password for deploy from 185.220.101.45 port 12346 ssh2\n",
+  "input_type": "log",
+  "log_findings": {
+    "error": "Completions.create() got an unexpected keyword argument 'headers'",
+    "severity": "UNKNOWN"
+  },
+  "threat_intel": {
+    "error": "Completions.create() got an unexpected keyword argument 'headers'",
+    "exposure_level": "UNKNOWN"
+  },
+  "vuln_scan": {
+    "error": "Completions.create() got an unexpected keyword argument 'headers'",
+    "risk_score": 0
+  },
+  "incident_plan": {
+    "error": "Completions.create() got an unexpected keyword argument 'headers'",
+    "priority": "UNKNOWN"
+  },
+  "policy_gaps": {
+    "error": "Completions.create() got an unexpected keyword argument 'headers'",
+    "overall_score": 0
+  },
+  "agent_trace": [
+    "[17:47:06] InputClassifier \u2192 detected input_type='log' | scores={'log': 3, 'code': 0, 'config': 0, 'policy': 0}",
+    "[17:47:06] RAGRetriever \u2192 retrieved 1011 chars of context",
+    "[17:47:06] LogMonitorAgent \u2192 severity=UNKNOWN | 0 findings",
+    "[17:47:06] ThreatIntelAgent \u2192 0 CVEs | 0 TTPs",
+    "[17:47:06] VulnScannerAgent \u2192 risk_score=0 | ? findings",
+    "[17:47:06] IncidentResponseAgent \u2192 priority=UNKNOWN",
+    "[17:47:06] PolicyCheckerAgent \u2192 overall_score=0",
+    "[17:47:06] ReportSynthesizer \u2192 report generated (1205 chars)"
+  ],
+  "errors": [],
+  "rag_context": "[Context 1 | category=log_analysis | relevance=0.68]\nSSH brute force attack pattern: multiple failed authentication attempts from the same IP within a short timeframe. Typical threshold: >5 failures in 60 seconds. Common source IPs often belong to Tor exit nodes or VPS providers. Mitigation: fail2ban, rate limiting, disable password auth, use key-based auth only.\n\n[Context 2 | category=log_analysis | relevance=0.58]\nPort scanning indicators in network logs: sequential port access, RST responses, SYN packets to multiple ports in rapid succession. Tools: nmap, masscan, zmap. Nmap default scan leaves fingerprint in IDS logs as SYN to common ports.\n\n[Context 3 | category=threat_intel | relevance=0.52]\nCVE-2023-44487 HTTP/2 Rapid Reset: DDoS vulnerability in HTTP/2 protocol. CVSS 7.5. Allows attackers to send RST_STREAM frames to reset connections rapidly. Affected: nginx, Apache, Go HTTP/2 servers. Patch available in nginx 1.25.3+. Exploited by botnet in record-breaking DDoS campaigns (October 2023).",
+  "started_at": "2026-06-13T17:47:06.253325"
+}

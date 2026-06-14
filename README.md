@@ -1,193 +1,193 @@
-# Cybersecurity Threat Detection Agent
+╔══════════════════════════════════════════════════════════════════════╗
+║  CyberSecurity Multi-Agent System                                     ║
+║  LangGraph · Ollama · HuggingFace · LlamaIndex · ChromaDB · @tool    ║
+║  Gradio Web UI                                                        ║
+╚══════════════════════════════════════════════════════════════════════╝
 
-An autonomous SOC (Security Operations Center) analyst built with the OpenAI Agents SDK and OpenRouter. It ingests SIEM-style security events, correlates threats across authentication, network, API, endpoint, and cloud data sources, assigns threat scores, maps to MITRE ATT&CK, drafts SOC incident reports, and proposes containment actions.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ STACK OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
----
+ Component          Role
+ ─────────────────  ─────────────────────────────────────────────────
+ LangGraph          Orchestrates agents as a compiled state machine
+ Ollama             Local LLM runtime (gpt-oss:120b-cloud)
+ LangChain @tool    Utility tools callable inside agent nodes
+ HuggingFace        Local sentence-transformer embeddings (no API key)
+ LlamaIndex         RAG framework — document indexing + retrieval
+ ChromaDB           Persistent vector store (local disk)
+ Gradio             Interactive web UI for analysis & visualization
 
-## Setup
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ QUICK START
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### Prerequisites
+1. Install dependencies:
+   pip install -r requirements.txt
 
-- Python 3.10+
-- [uv](https://github.com/astral-sh/uv) package manager
-- An [OpenRouter](https://openrouter.ai/) API key
+2. Set your credentials in cs.env:
+   OPENROUTER_API_KEY=sk-or-...  (if using OpenRouter)
+   GRADIO_USER=admin
+   GRADIO_PASSWORD=CyberSec@2026!
+   LANGSMITH_API_KEY=lsv2_pt_...  (optional, for tracing)
+   LANGSMITH_TRACING=true          (set false to disable)
 
-### Installation
+   (Change the default password before deploying)
 
-```bash
-# Clone the repository (if not already done)
-cd sentinelmesh-ai
+3. Run the Gradio web UI:
+   python cybersecurityGradio.py
 
-# Install dependencies
-pip install uv
-uv sync
-```
+   This opens a browser-based interface with:
+   - Scenario selector (4 built-in examples + custom input)
+   - Tabbed results: Report, Log Findings, Threat Intel, Vulnerabilities, Compliance, Trace
+   - Green ✅ status indicators showing initialization state
 
-### Environment Variables
+4. Run via CLI (headless):
+   python cybersecurityAgents.py ssh_brute_force
+   python cybersecurityAgents.py vulnerable_code
+   python cybersecurityAgents.py docker_misconfig
+   python cybersecurityAgents.py policy_audit
 
-Create or update the `.env` file in the project root:
+5. Run programmatically:
+   from cybersecurityAgents import run_analysis
+   results = run_analysis("your logs or code here")
 
-```env
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
-OPENROUTER_MODEL=openai/gpt-5-mini
-```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ PROJECT FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### Running the Agent
+ File                       Purpose
+ ────────────────────────   ──────────────────────────────────────────
+ cybersecurityAgents.py     Core multi-agent system (LangGraph pipeline)
+ cybersecurityGradio.py     Gradio web UI wrapper
+ cs.env                     API keys (OPENROUTER_API_KEY)
+ requirements.txt           Python dependencies
+ README.md                  This file
+ claude.md                  Gradio integration analysis & architecture
+ skill.md                   Team skills & technology breakdown
 
-```bash
-# Interactive mode (select a scenario)
-PYTHONPATH=projects uv run python -m sentinelmesh_ai.main
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ VECTOR STORE PERSISTENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# Programmatic mode (specific scenario)
-PYTHONPATH=projects uv run python -c "
-import asyncio
-from sentinelmesh_ai.main import run_threat_detection
+ The system checks if ChromaDB already has indexed data on startup:
 
-async def main():
-    report = await run_threat_detection('brute_force_attack')
-    print(report)
+ - If ./chroma_cybersec_db/ exists with data → loads existing index (fast)
+ - If not → indexes the knowledge base into ChromaDB (first run only)
 
-asyncio.run(main())
-"
-```
+ The Gradio UI displays green ✅ checkboxes showing:
+   ✅ OpenRouter LLM Connected
+   ✅ HuggingFace Embeddings Loaded
+   ✅ ChromaDB + LlamaIndex Vector Store (loaded existing / freshly indexed)
+   ✅ LangGraph Pipeline Compiled
 
----
+ Use the "🔍 Check Status" button to inspect without running analysis.
 
-## Key Features
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ AGENTS & LANGGRAPH FLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-| Agent | Responsibility | Tools |
-|-------|---------------|-------|
-| **Alert Intake Agent** | Ingest security events, classify threat category, assign initial severity, route to specialist | `fetch_security_alerts`, `get_asset_inventory` |
-| **Auth Analyzer Agent** | Analyze authentication logs for brute force, impossible travel, credential stuffing, privilege escalation | `query_auth_logs`, `detect_anomalous_logins`, `check_privilege_changes` |
-| **Network/API Analyzer Agent** | Analyze network logs, API access patterns, detect C2 communication, data exfiltration | `query_network_logs`, `query_api_access_logs`, `detect_c2_patterns` |
-| **Threat Intel Agent** | Enrich findings with IOC lookups, MITRE ATT&CK mapping, reputation scoring, compute threat score | `lookup_ioc`, `map_mitre_attack`, `get_threat_reputation` |
-| **Containment Agent** | Propose containment actions (block IP, disable account, revoke key, isolate host) | `propose_ip_block`, `propose_account_disable`, `propose_api_key_revoke`, `propose_host_isolation` |
-| **SOC Report Agent** | Generate structured SOC incident report with timeline, threat score, MITRE mapping, evidence | `generate_threat_timeline`, `format_soc_report` |
+  [Input]
+     │
+     ▼
+  classify_input       ← Detects if input is log/code/config/policy
+     │
+     ▼
+  rag_retrieve         ← LlamaIndex retrieves relevant KB chunks from ChromaDB
+     │
+     ▼
+  log_monitor          ← Detects attacks, anomalies, IoCs
+     │
+     ▼
+  threat_intel         ← Maps to CVEs, MITRE ATT&CK, threat actors
+     │
+     ▼
+  vuln_scanner         ← OWASP/CWE vulnerability assessment
+     │
+     ▼
+  incident_response    ← NIST 800-61 playbook with 3-phase timeline
+     │
+     ▼
+  policy_checker       ← NIST CSF / ISO 27001 / SOC 2 gap analysis
+     │
+     ▼
+  synthesize_report    ← Combines all outputs into final report
+     │
+     ▼
+  [Report + JSON saved to disk]
 
----
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GRADIO WEB UI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## Pre-Built Threat Scenarios
+ Launch:
+   python cybersecurityGradio.py
 
-| Scenario | Description |
-|----------|-------------|
-| `brute_force_attack` | Brute force against admin accounts from botnet IPs, account compromise, lateral movement |
-| `insider_threat` | Employee escalates privileges, accesses sensitive APIs, exfiltrates data via cloud storage |
-| `api_key_compromise` | Leaked production API key used from foreign IP for mass data extraction |
-| `malware_lateral_movement` | Phishing leads to Cobalt Strike beacon, Mimikatz credential dump, PsExec lateral movement, C2 beaconing |
-| `cloud_misconfiguration` | S3 bucket made public, security group opened to 0.0.0.0/0, external actors access sensitive data |
+ Features:
+   - Login gate (username/password from cs.env)
+   - Dropdown to select built-in scenarios or paste custom input
+   - Tabbed output panels (Report, Findings, Threat Intel, Vulns, Compliance, Trace)
+   - Real-time system status panel with green ✅ checkboxes
+   - Singleton pipeline — initializes once, reuses across requests
+   - Vector store persistence check — skips re-indexing if data exists
+   - Rate limiting (30s cooldown between requests)
+   - Input validation (max 10,000 characters)
+   - Localhost-only binding (no external network access)
 
----
+ Architecture:
+   ┌──────────────┐       ┌───────────────────────┐       ┌──────────────────┐
+   │  Gradio UI   │──────▶│  cybersecurityAgents   │──────▶│  LangGraph       │
+   │  (Browser)   │◀──────│  (pipeline singleton)  │◀──────│  Pipeline        │
+   └──────────────┘       └───────────────────────┘       └──────────────────┘
 
-## Project Structure
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ MODEL OPTIONS (OpenRouter)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-```
-projects/sentinelmesh_ai/
-├── main.py                          # Entry point, OpenRouter config, pipeline orchestration
-├── utils/
-│   └── config.py                    # Environment variable loader
-├── models/
-│   ├── events.py                    # SecurityAlert, AssetInfo, ThreatCategory, ThreatSeverity
-│   ├── analysis.py                  # AuthLogEntry, NetworkLogEntry, APIAccessEntry, EndpointEvent, CloudAuditEntry, IOCMatch, MITREMapping
-│   └── response.py                  # ContainmentAction, ThreatScore, SOCIncidentReport
-├── simulators/
-│   ├── auth_log_simulator.py        # Auth log generation (brute force, impossible travel, etc.)
-│   ├── network_log_simulator.py     # Network/firewall log generation (C2, scanning, exfil)
-│   ├── api_access_simulator.py      # API access log generation (abuse, key compromise)
-│   ├── endpoint_simulator.py        # Endpoint/EDR event generation (malware, lateral movement)
-│   ├── cloud_audit_simulator.py     # Cloud audit trail generation (IAM, S3, security groups)
-│   └── scenario_engine.py           # Orchestrates all simulators for 5 threat scenarios
-├── tools/
-│   ├── alert_tools.py               # fetch_security_alerts, get_asset_inventory
-│   ├── auth_tools.py                # query_auth_logs, detect_anomalous_logins, check_privilege_changes
-│   ├── network_tools.py             # query_network_logs, query_api_access_logs, detect_c2_patterns
-│   ├── threat_intel_tools.py        # lookup_ioc, map_mitre_attack, get_threat_reputation
-│   ├── containment_tools.py         # propose_ip_block, propose_account_disable, propose_api_key_revoke, propose_host_isolation
-│   └── reporting_tools.py           # generate_threat_timeline, format_soc_report
-├── guardrails/
-│   ├── input_validation.py          # Validates security event data before processing
-│   └── containment_safety.py        # Blocks dangerous/overbroad containment actions
-└── agents/
-    ├── alert_intake.py              # Alert Intake Agent (entry point, routing)
-    ├── auth_analyzer.py             # Auth Analyzer Agent (identity threats)
-    ├── network_analyzer.py          # Network/API Analyzer Agent (network threats)
-    ├── threat_intel.py              # Threat Intel Agent (IOC, MITRE, reputation)
-    ├── containment.py               # Containment Agent (propose actions)
-    └── soc_reporter.py              # SOC Report Agent (final report, terminal)
-```
+ Free tier (no billing required):
+   mistralai/mistral-7b-instruct              ← Default
+   meta-llama/llama-3.1-8b-instruct:free
+   google/gemma-2-9b-it:free
 
----
+ Paid (higher quality):
+   openai/gpt-4o
+   anthropic/claude-3-5-sonnet
+   mistralai/mixtral-8x7b-instruct
 
-## Usage Examples
+ Change in Config.LLM_MODEL in cybersecurityAgents.py
 
-### Run a Specific Scenario Programmatically
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ EMBEDDING OPTIONS (HuggingFace, all local)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-```python
-import asyncio
-from sentinelmesh_ai.main import run_threat_detection
+ sentence-transformers/all-MiniLM-L6-v2   ← Default (~90MB, fast)
+ BAAI/bge-base-en-v1.5                    ← Better quality (~440MB)
+ sentence-transformers/all-mpnet-base-v2  ← Balanced (~420MB)
 
-report = asyncio.run(run_threat_detection("malware_lateral_movement"))
-print(report)
-```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ OUTPUT FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### Use a Different Model
+ cybersec_report_YYYYMMDD_HHMMSS.txt   ← Human-readable report
+ cybersec_results_YYYYMMDD_HHMMSS.json ← Structured JSON for all agents
+ ./chroma_cybersec_db/                 ← Persistent ChromaDB vector store
 
-Update `.env`:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ EXTENDING THE SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-```env
-OPENROUTER_MODEL=anthropic/claude-sonnet-4
-```
+ Add knowledge to the RAG database:
+   kb.add_document("Your threat intel text...", {"category": "threat_intel"})
 
-### Test Simulators Standalone
+ Add a new agent:
+   1. Write a node function: def node_my_agent(state) → state
+   2. graph.add_node("my_agent", node_my_agent)
+   3. graph.add_edge("policy_checker", "my_agent")
+   4. Add result key to CyberAgentState TypedDict
 
-```python
-from sentinelmesh_ai.simulators.scenario_engine import generate_scenario
-
-data = generate_scenario("insider_threat")
-print(f"Auth logs: {len(data.auth_logs)}")
-print(f"Network logs: {len(data.network_logs)}")
-print(f"API logs: {len(data.api_access_logs)}")
-print(f"Alerts: {len(data.alerts)}")
-```
-
----
-
-## Sample Output
-
-```
-======================================================================
-SOC INCIDENT REPORT
-======================================================================
-
-TITLE: Brute Force Compromise of 'admin' with Lateral Movement
-SEVERITY: CRITICAL
-THREAT SCORE: 88/100
-STATUS: CONTAINING
-
-EXECUTIVE SUMMARY
-Multiple external IPs executed a coordinated brute-force campaign against
-the privileged 'admin' account. A successful login from malicious IP
-185.220.101.34 led to lateral movement to jsmith and mchen accounts.
-
-MITRE ATT&CK MAPPING
-T1110 (Brute Force), T1078 (Valid Accounts), T1110.004 (Credential Stuffing)
-
-CONTAINMENT ACTIONS
-1) Block 5 malicious external IPs at firewall
-2) Disable compromised accounts (admin, jsmith, mchen)
-3) Isolate affected workstations for forensic imaging
-...
-======================================================================
-END OF REPORT
-======================================================================
-```
-
----
-
-## Environment Variable Reference
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `OPENROUTER_API_KEY` | OpenRouter API key (required) | - |
-| `OPENROUTER_BASE_URL` | OpenRouter API base URL | `https://openrouter.ai/api/v1` |
-| `OPENROUTER_MODEL` | LLM model to use via OpenRouter | `openai/gpt-5-mini` |
+ Add conditional routing (e.g., only run incident response for CRITICAL):
+   graph.add_conditional_edges(
+       "vuln_scanner",
+       lambda s: "incident_response" if s["vuln_scan"]["risk_score"] > 70 else "policy_checker",
+       {"incident_response": "incident_response", "policy_checker": "policy_checker"}
+   )
