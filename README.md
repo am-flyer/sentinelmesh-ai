@@ -2,6 +2,23 @@
 
 Cybersecurity multi-agent analyzer built with LangGraph, HuggingFace embeddings, LlamaIndex, ChromaDB, and Gradio.
 
+# Working Prototype for Demo
+
+# Working Prototype for Demo
+
+### 🚀 Live Demo
+You can access the live web application here:
+👉 [Launch Working Prototype](https://f497a385101483016c.gradio.live)
+
+### 📺 Video Demonstration
+If the live environment is asleep or you'd prefer a quick walkthrough, you can watch the demonstration video here:
+👉 [Watch Video Demo (Google Drive)](https://drive.google.com/file/d/125DG_nVNxIkB0j0YukBfr_cpfUIR1KcQ/view?usp=drive_link)
+
+``` text
+username: admin
+password: change-me
+```
+
 ## Structure
 
 ```text
