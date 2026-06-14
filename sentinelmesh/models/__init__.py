@@ -1,1 +1,0 @@
-"""Shared SentinelMesh data models."""

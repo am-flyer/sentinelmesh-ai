@@ -1,3 +1,0 @@
-timestamp,kind,actor,source_ip,asset_id,action,outcome,severity,message,indicators
-2026-06-13T10:00:00Z,auth,admin,185.220.101.34,iam-prod,login,failed,HIGH,Repeated failed admin login attempts,"185.220.101.34,admin"
-2026-06-13T10:03:00Z,auth,admin,185.220.101.34,iam-prod,login,success,CRITICAL,Admin login succeeded from malicious IP,"185.220.101.34,admin"

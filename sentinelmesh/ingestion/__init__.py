@@ -1,1 +1,0 @@
-"""Browser evidence ingestion utilities."""
