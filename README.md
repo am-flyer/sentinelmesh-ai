@@ -6,7 +6,7 @@ Cybersecurity multi-agent analyzer built with LangGraph, HuggingFace embeddings,
 
 ### 🚀 Live Demo
 You can access the live web application here:
-👉 [Launch Working Prototype](https://huggingface.co/spaces/bchoudha/C7HackathonGroup4)
+👉 [Launch Working Prototype](https://bchoudha-c7hackathongroup4.hf.space/)
 
 ### 📺 Video Demonstration
 If the live environment is asleep or you'd prefer a quick walkthrough, you can watch the demonstration video here:
